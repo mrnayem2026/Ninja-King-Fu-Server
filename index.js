@@ -28,6 +28,7 @@ async function run() {
 
         // Create a DateBase and Collections 
         const usersCollection = client.db("ninjaKungFuDb").collection("users");
+        const classCollection = client.db("ninjaKungFuDb").collection("class");
 
         // users related apis
         app.get('/users', async (req, res) => {
@@ -78,6 +79,13 @@ async function run() {
             const result = await usersCollection.updateOne(filter, updateDoc);
             res.send(result);
 
+        })
+
+        // class related apis
+        app.post('/class', async (req, res) => {
+            const item = req.body;
+            const result = await classCollection.insertOne(item);
+            res.send(result);
         })
 
 
