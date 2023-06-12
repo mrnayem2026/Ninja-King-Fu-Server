@@ -30,12 +30,13 @@ async function run() {
         const usersCollection = client.db("ninjaKungFuDb").collection("users");
         const classCollection = client.db("ninjaKungFuDb").collection("class");
 
-        // users related apis
+        // users related apis [Get logged user]
         app.get('/users', async (req, res) => {
             const result = await usersCollection.find().toArray();
             res.send(result);
         });
 
+        // [Create a Login user. and save user data server and database both]
         app.post('/users', async (req, res) => {
             const user = req.body;
             const query = { email: user.email }
@@ -49,7 +50,7 @@ async function run() {
             res.send(result);
         });
 
-        // create a admin 
+        // create a admin [**Make Admin** ]
         app.patch('/users/admin/:id', async (req, res) => {
             const id = req.params.id;
             console.log(id);
@@ -65,7 +66,7 @@ async function run() {
 
         })
 
-        // create a instructor
+        // create a instructor [**Make Instructor** ]
         app.patch('/users/instructor/:id', async (req, res) => {
             const id = req.params.id;
             console.log(id);
@@ -82,13 +83,15 @@ async function run() {
         })
 
         // class related apis
+
+        // **Add a Class:** 
         app.post('/class', async (req, res) => {
             const item = req.body;
             const result = await classCollection.insertOne(item);
             res.send(result);
         })
 
-
+        // **My Classes:**  
         app.get('/class', async (req, res) => {
             const email = req.query.email;
             const query = { instructorEmail: email };
