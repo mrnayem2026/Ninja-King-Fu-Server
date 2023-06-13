@@ -29,7 +29,6 @@ async function run() {
         // ! Create a DateBase and Collections 
         const usersCollection = client.db("ninjaKungFuDb").collection("users");
         const classCollection = client.db("ninjaKungFuDb").collection("class");
-        const feedbackCollection = client.db("ninjaKungFuDb").collection("feedback");
 
         // ! users related apis [Get logged user data from database]
         app.get('/users', async (req, res) => {
@@ -133,11 +132,21 @@ async function run() {
         //  Admin Releted Api 
 
         //! Send feedback to instructor 
-        app.post('/feedback', async (req, res) => {
-            const feedback = req.body;
-            const result = await feedbackCollection.insertOne(feedback);
+        app.patch('/feedback/:id', async (req, res) => {
+            const id = req.params.id;
+            const body = req.body;
+            const filter = { _id: new ObjectId(id) };
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: {
+                    feedback:body.feedback
+                },
+            };
+
+            const result = await classCollection.updateOne(filter, updateDoc,options);
             res.send(result);
-        });
+
+        })
         
 
 
