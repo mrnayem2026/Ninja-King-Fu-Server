@@ -30,13 +30,13 @@ async function run() {
         const usersCollection = client.db("ninjaKungFuDb").collection("users");
         const classCollection = client.db("ninjaKungFuDb").collection("class");
 
-        // users related apis [Get logged user]
+        // users related apis [Get logged user data from database]
         app.get('/users', async (req, res) => {
             const result = await usersCollection.find().toArray();
             res.send(result);
         });
 
-        // [Create a Login user. and save user data server and database both]
+        // [Create a Login user api. and save user data server and database both]
         app.post('/users', async (req, res) => {
             const user = req.body;
             const query = { email: user.email }
@@ -99,6 +99,27 @@ async function run() {
             res.send(result);
         })
 
+        // **My Classes Up Date:**  
+        app.put('/class/:id', async (req, res) => {
+            const id = req.params.id;
+            const body = req.body;
+            const filter = { _id: new ObjectId(id) };
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: {
+                    className: body.className,
+                    classImage : body.classImage,
+                    instructorName : body.instructorName,
+                    instructorEmail : body.instructorEmail,
+                    availableSeats : body.availableSeats,
+                    price:body.price
+                },
+            };
+
+            const result = await classCollection.updateOne(filter, updateDoc,options);
+            res.send(result);
+
+        })
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
