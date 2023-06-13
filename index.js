@@ -26,17 +26,18 @@ const client = new MongoClient(uri, {
 async function run() {
     try {
 
-        // Create a DateBase and Collections 
+        // ! Create a DateBase and Collections 
         const usersCollection = client.db("ninjaKungFuDb").collection("users");
         const classCollection = client.db("ninjaKungFuDb").collection("class");
+        const feedbackCollection = client.db("ninjaKungFuDb").collection("feedback");
 
-        // users related apis [Get logged user data from database]
+        // ! users related apis [Get logged user data from database]
         app.get('/users', async (req, res) => {
             const result = await usersCollection.find().toArray();
             res.send(result);
         });
 
-        // [Create a Login user api. and save user data server and database both]
+        // ! [Create a Login user api. and save user data server and database both]
         app.post('/users', async (req, res) => {
             const user = req.body;
             const query = { email: user.email }
@@ -50,7 +51,7 @@ async function run() {
             res.send(result);
         });
 
-        // create a admin [**Make Admin** ]
+        // ! create a admin [**Make Admin** ]
         app.patch('/users/admin/:id', async (req, res) => {
             const id = req.params.id;
             console.log(id);
@@ -66,7 +67,7 @@ async function run() {
 
         })
 
-        // create a instructor [**Make Instructor** ]
+        // ! create a instructor [**Make Instructor** ]
         app.patch('/users/instructor/:id', async (req, res) => {
             const id = req.params.id;
             console.log(id);
@@ -82,16 +83,16 @@ async function run() {
 
         })
 
-        // class related apis
+        //  class related apis
 
-        // **Add a Class:** 
+        // ! Add a Class:** 
         app.post('/class', async (req, res) => {
             const item = req.body;
             const result = await classCollection.insertOne(item);
             res.send(result);
         })
 
-        // **My Classes: get only a instructor class**  
+        // ! My Classes: get only a instructor class**  
         app.get('/class', async (req, res) => {
             const email = req.query.email;
             const query = { instructorEmail: email };
@@ -99,13 +100,14 @@ async function run() {
             res.send(result);
         })
 
-        // **  Get all instructor class**  
+        // !  Get all instructor class**  
         app.get('/all_class', async (req, res) => {
             const result = await classCollection.find().toArray();
             res.send(result);
         })
 
-        // **My Classes Up Date:**  
+        // !My Classes Up Date:** 
+
         app.put('/class/:id', async (req, res) => {
             const id = req.params.id;
             const body = req.body;
@@ -126,6 +128,18 @@ async function run() {
             res.send(result);
 
         })
+
+
+        //  Admin Releted Api 
+
+        //! Send feedback to instructor 
+        app.post('/feedback', async (req, res) => {
+            const feedback = req.body;
+            const result = await feedbackCollection.insertOne(feedback);
+            res.send(result);
+        });
+        
+
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
