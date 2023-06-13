@@ -91,11 +91,17 @@ async function run() {
             res.send(result);
         })
 
-        // **My Classes:**  
+        // **My Classes: get only a instructor class**  
         app.get('/class', async (req, res) => {
             const email = req.query.email;
             const query = { instructorEmail: email };
             const result = await classCollection.find(query).toArray();
+            res.send(result);
+        })
+
+        // **  Get all instructor class**  
+        app.get('/all_class', async (req, res) => {
+            const result = await classCollection.find().toArray();
             res.send(result);
         })
 
