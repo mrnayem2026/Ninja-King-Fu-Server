@@ -29,6 +29,7 @@ async function run() {
         // ! Create a DateBase and Collections 
         const usersCollection = client.db("ninjaKungFuDb").collection("users");
         const classCollection = client.db("ninjaKungFuDb").collection("class");
+        const selectedClassesCollection = client.db("ninjaKungFuDb").collection("selectedClasses");
 
         // ! users related apis [Get logged user data from database]
         app.get('/users', async (req, res) => {
@@ -53,7 +54,6 @@ async function run() {
         // ! create a admin [**Make Admin** ]
         app.patch('/users/admin/:id', async (req, res) => {
             const id = req.params.id;
-            console.log(id);
             const filter = { _id: new ObjectId(id) };
             const updateDoc = {
                 $set: {
@@ -94,7 +94,7 @@ async function run() {
         // ! My Classes: get only a instructor class**  
         app.get('/class', async (req, res) => {
             const email = req.query.email;
-            const query = { instructorEmail: email };
+            const query = { email: email };
             const result = await classCollection.find(query).toArray();
             res.send(result);
         })
@@ -115,40 +115,64 @@ async function run() {
             const updateDoc = {
                 $set: {
                     className: body.className,
-                    classImage : body.classImage,
-                    instructorName : body.instructorName,
-                    instructorEmail : body.instructorEmail,
+                    image : body.image,
+                    name : body.name,
+                    email : body.email,
                     availableSeats : body.availableSeats,
                     price:body.price
                 },
             };
-
             const result = await classCollection.updateOne(filter, updateDoc,options);
             res.send(result);
 
         })
 
+        
 
-        //  Admin Releted Api 
+ 
+        //  ** Admin Releted Api **
 
-        //! Send feedback to instructor 
-        app.patch('/feedback/:id', async (req, res) => {
+        // !My Classes set Status:** 
+
+        app.patch('/set_status/:id', async (req, res) => {
             const id = req.params.id;
             const body = req.body;
             const filter = { _id: new ObjectId(id) };
             const options = { upsert: true };
             const updateDoc = {
                 $set: {
-                    feedback:body.feedback
+                    status:body.status
                 },
             };
-
             const result = await classCollection.updateOne(filter, updateDoc,options);
             res.send(result);
 
         })
-        
 
+        //! Send feedback to instructor 
+        app.patch('/feedback/:id', async (req, res) => {
+            const id = req.params.id;
+            const body = req.body;
+            const filter = { _id: new ObjectId(id) };
+            const updateDoc = {
+                $set: {
+                    feedback:body.feedback
+                },
+            };
+
+            const result = await classCollection.updateOne(filter, updateDoc);
+            res.send(result);
+
+        })
+
+
+        // ** Student Releted Api **
+        
+        app.post('/selected_classes', async (req, res) => {
+            const item = req.body;
+            const result = await classCollection.insertOne(item);
+            res.send(result);
+        })
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
