@@ -37,6 +37,12 @@ async function run() {
             res.send(result);
         });
 
+        // ! get all Instructor
+        app.get('/all_instructor', async (req, res) => {
+            const result = await usersCollection.find({ role: "instructor" }).toArray();
+            res.send(result);
+        });
+
         // ! [Create a Login user api. and save user data server and database both]
         app.post('/users', async (req, res) => {
             const user = req.body;
