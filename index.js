@@ -99,6 +99,12 @@ async function run() {
             res.send(result);
         })
 
+        // ! My Classes: get only  approved class**  
+        app.get('/approved_class', async (req, res) => {
+            const result = await classCollection.find({ status: "approved" }).toArray();
+            res.send(result);
+        })
+
         // !  Get all instructor class**  
         app.get('/all_class', async (req, res) => {
             const result = await classCollection.find().toArray();
