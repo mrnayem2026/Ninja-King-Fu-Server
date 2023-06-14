@@ -51,6 +51,16 @@ async function run() {
             const result = { admin: user?.role === 'admin' }
             res.send(result);
           })
+
+        // ! get only instructor logged user
+        app.get('/instructor/:email',  async (req, res) => {
+            const email = req.params.email;
+            const query = { email: email }
+            const user = await usersCollection.findOne(query);
+            const result = { instructor: user?.role === 'instructor' }
+            res.send(result);
+          })
+
         // ! [Create a Login user api. and save user data server and database both]
         app.post('/users', async (req, res) => {
             const user = req.body;
