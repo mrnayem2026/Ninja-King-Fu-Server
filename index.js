@@ -43,6 +43,14 @@ async function run() {
             res.send(result);
         });
 
+        // ! get only admin logged user
+        app.get('/admin/:email',  async (req, res) => {
+            const email = req.params.email;
+            const query = { email: email }
+            const user = await usersCollection.findOne(query);
+            const result = { admin: user?.role === 'admin' }
+            res.send(result);
+          })
         // ! [Create a Login user api. and save user data server and database both]
         app.post('/users', async (req, res) => {
             const user = req.body;
