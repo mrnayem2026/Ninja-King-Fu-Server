@@ -26,7 +26,7 @@ const client = new MongoClient(uri, {
 async function run() {
     try {
 
-        // ! Create a DateBase and Collections 
+        // ! Create a DateBase and Collections {for testing}  
         const usersCollection = client.db("ninjaKungFuDb").collection("users");
         const classCollection = client.db("ninjaKungFuDb").collection("class");
         const selectedClassesCollection = client.db("ninjaKungFuDb").collection("selectedClasses");
